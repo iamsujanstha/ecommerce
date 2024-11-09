@@ -1,4 +1,5 @@
 'use client'
+import { useLogin } from '@/app/auth/login/login.query'
 import CommonForm from '@/components/core/common-form/CommonForm'
 import { loginFromControls } from '@/config'
 import Link from 'next/link'
@@ -11,6 +12,8 @@ const initialState = {
 
 const Login = () => {
   const [formData, setFormData] = useState(initialState);
+  const { data } = useLogin();
+  console.log(data)
 
   const onSubmit = () => { }
 
