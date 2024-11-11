@@ -7,18 +7,24 @@ import { Textarea } from '@/components/ui/textarea'
 import { FormControlProps } from '@/config'
 import { Button } from '@/components/ui/button'
 
+export type FormDataType = {
+  userName?: string;
+  email: string;
+  password: string;
+  [key: string]: string | undefined;
+};
 
-type CommonFormProps<T extends Record<string, any>> = {
+
+type CommonFormProps<T extends FormDataType> = {
   formControls: FormControlProps[];
   formData: T;
   setFormData: React.Dispatch<React.SetStateAction<T>>;
-  onSubmit: () => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   buttonText: string;
 };
 
-const CommonForm = <T extends Record<string, any>>({ formControls, formData, setFormData, onSubmit, buttonText = 'Submit' }: CommonFormProps<T>) => {
-
-  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+const CommonForm = <T extends FormDataType>({ formControls, formData, setFormData, onSubmit, buttonText = 'Submit' }: CommonFormProps<T>) => {
+  const handleChange = (name: keyof T) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = event.target.value;
     setFormData(prevData => ({
       ...prevData,
@@ -35,8 +41,8 @@ const CommonForm = <T extends Record<string, any>>({ formControls, formData, set
             placeholder={field.placeholder}
             id={field.name}
             type={field.type || 'text'}
-            value={formData[field.name] || ''}
-            onChange={handleChange(field.name)}
+            value={formData[field.name as keyof T] || ''}
+            onChange={handleChange(field.name as keyof T)}
           />
         );
 
@@ -46,16 +52,16 @@ const CommonForm = <T extends Record<string, any>>({ formControls, formData, set
             name={field.name}
             placeholder={field.placeholder}
             id={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange(field.name)}
+            value={formData[field.name as keyof T] || ''}
+            onChange={handleChange(field.name as keyof T)}
           />
         );
 
       case 'select':
         return (
           <Select
-            onValueChange={(value) => handleChange(field.name)({ target: { value } } as any)}
-            value={formData[field.name] || ''}
+            onValueChange={(value) => handleChange(field.name as keyof T)({ target: { value } } as React.ChangeEvent<HTMLInputElement>)}
+            value={formData[field.name as keyof T] || ''}
           >
             <SelectTrigger className='w-full'>
               <SelectValue placeholder={field.placeholder} />
@@ -74,7 +80,10 @@ const CommonForm = <T extends Record<string, any>>({ formControls, formData, set
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={(event) => {
+      event.preventDefault();
+      onSubmit(event);
+    }}>
       <div className='flex flex-col gap-3'>
         {formControls.map(field => (
           <div className='grid w-full gap-1.5' key={field.name}>

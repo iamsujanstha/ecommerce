@@ -1,4 +1,5 @@
 'use client'
+import { useRegister } from '@/app/auth/auth.query'
 import CommonForm from '@/components/core/common-form/CommonForm'
 import { registerFormControls } from '@/config'
 import Link from 'next/link'
@@ -12,8 +13,13 @@ const initialState = {
 
 const Register = () => {
   const [formData, setFormData] = useState(initialState);
+  const { mutate, isPending } = useRegister();
 
-  const onSubmit = () => { }
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(formData)
+    mutate({ ...formData })
+  }
 
   return (
     <div className='mx-auto w-full max-w-md space-y-6'>
@@ -31,7 +37,7 @@ const Register = () => {
       </div>
       <CommonForm
         formControls={registerFormControls}
-        buttonText='Sign Up'
+        buttonText={isPending ? 'loading...' : 'Sign Up'}
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}

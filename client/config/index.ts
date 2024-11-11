@@ -34,13 +34,13 @@ export const registerFormControls: FormControlProps[] = [
     componentType: 'input',
     type: 'password'
   },
-  // {
-  //   name: 'select',
-  //   label: 'select',
-  //   placeholder: 'Please select',
-  //   componentType: 'select',
-  //   options: [{ id: 1, value: 'Value1' }, { id: 2, value: 'Value2' }]
-  // }
+  {
+    name: 'select',
+    label: 'select',
+    placeholder: 'Please select',
+    componentType: 'select',
+    options: [{ id: 1, value: 'Value1' }, { id: 2, value: 'Value2' }]
+  }
 ]
 
 export const loginFromControls: FormControlProps[] = [
