@@ -1,13 +1,13 @@
 interface BackendSuccessResponse<T> {
   data: T;
-  status: boolean;
+  success: boolean;
   message: string;
   errors: null;
 }
 
 interface BackendErrorResponse<T> {
   error: T;
-  status: boolean;
+  success: boolean;
   message: string;
 }
 
@@ -56,3 +56,7 @@ type RecursiveKeyOf<T> = T extends object
     [K in keyof T]: RecursiveKeys<T[K]>;
   }[keyof T]
   : T;
+
+type WithoutIndexSignature<T> = {
+  [K in keyof T as string extends K ? never : K]: T[K];
+};

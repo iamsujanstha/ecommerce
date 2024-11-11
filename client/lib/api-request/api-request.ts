@@ -1,42 +1,34 @@
-import { getAxiosParams, sanitizeApiController, transformRequestData } from "@/lib/api-request/api-schema";
-import { ApiDetailType, RequestDataType } from "@/lib/api-request/api-types";
-import Axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios"
-import { Primitive } from "type-fest";
+import { getRequestHeaders, sanitizeApiController, transformRequestData } from "@/lib/api-request/utility/request-utils";
+import { ApiDetailType, RequestDataType } from "./api-types";
+import { AxiosResponse } from "axios";
+import axiosInstance from "@/lib/api-request/utility/axios-instance";
 
-
-export interface InitApiRequest {
+interface ApiRequestConfig {
   apiDetails: ApiDetailType;
-  pathVariables?: GenericObj<Primitive>;
-  params?: { [key: string]: Primitive | Array<GenericObj<Primitive>> };
+  pathVariables?: Record<string, string>;
   requestData?: RequestDataType;
-  signal?: AbortSignal;
-  headers?: RawAxiosRequestHeaders;
+  params?: Record<string, string | number>;
+  headers?: Record<string, string>;
 }
 
-const initApiRequest = async<TData>({
+const apiRequest = async <TData>({
   apiDetails,
   pathVariables,
+  requestData,
   params,
-  headers,
-  signal,
-  requestData
-}: InitApiRequest): Promise<AxiosResponse<TData> | undefined> => {
-  const sanitizedDetails = sanitizeApiController({ ...apiDetails }, pathVariables);
-  const axiosParams = getAxiosParams(sanitizedDetails, {
-    ...headers,
-    // "X-Tenant-id": getFromLocalStorage("X-TenantID"),
+  headers = {},
+}: ApiRequestConfig): Promise<AxiosResponse<TData>> => {
+  const url = sanitizeApiController(apiDetails, pathVariables);
+  const data = transformRequestData(apiDetails, requestData);
+  const requestHeaders = { ...getRequestHeaders(apiDetails), ...headers };
+  return await axiosInstance.request<TData>({
+    url,
+    method: apiDetails.requestMethod,
+    params,
+    data,
+    headers: requestHeaders,
+    withCredentials: true
   });
+};
 
-  try {
-    return await Axios.request<TData>({
-      ...axiosParams,
-      params,
-      signal: signal ?? axiosParams.signal,
-      data: transformRequestData(sanitizedDetails, requestData),
-    })
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-export default initApiRequest;
+export default apiRequest;
