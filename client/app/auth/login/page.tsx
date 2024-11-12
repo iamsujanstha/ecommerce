@@ -1,7 +1,6 @@
 'use client'
 import { useLogin } from '@/app/auth/auth.query'
 import { loginFromControls } from '@/config'
-import { getFromStorage } from '@/utility/storage'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -20,13 +19,12 @@ const initialState: LoginFormData = {
 
 const Login = () => {
   const [formData, setFormData] = useState<LoginFormData>(initialState);
-  const { mutate, error, isPending } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     mutate({ ...formData });
   };
-  console.log(!!getFromStorage('token','local'));
 
   return (
     <div className='mx-auto w-full max-w-md space-y-6'>
@@ -50,7 +48,6 @@ const Login = () => {
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
-      {error && <p className='text-red-500'>Login failed: {error.message}</p>}
     </div>
   )
 }

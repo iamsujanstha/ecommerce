@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../../models/User';
+import { DecodedToken } from '../../types';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
@@ -63,14 +64,14 @@ const loginUser: RequestHandler = async (req: Request, res: Response): Promise<v
       });
       return; // Ensure it stops further execution
     }
-    
+
 
     // Generate a JWT token
     const token = jwt.sign({ userId: user._id, email: user.email, role: user.role }, JWT_SECRET, {
       expiresIn: '1h',
     })
 
-    res.cookie('token', token, { httpOnly: true, secure: false,path: '/', sameSite:'lax'}).json({
+    res.cookie('token', token, { httpOnly: true, secure: false, path: '/', sameSite: 'lax' }).json({
       success: true,
       message: 'Login successful',
       data: {
@@ -101,27 +102,17 @@ const logoutUser = (req: Request, res: Response) => {
 };
 
 
-interface DecodedToken {
-  id: string;
-  username?: string;
-  email?: string;
-  // Add any other fields
-}
-
-interface AuthenticatedRequest extends Request {
-  user?: DecodedToken;
-}
-
 // Auth Middleware to Protect Routes
-const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   // const token = req.headers.authorization?.split(' ')[1]; only when client send the token through authorization header
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       message: 'Unauthorized user!',
     });
+    return;
   }
 
   try {

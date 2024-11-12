@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { FormControlProps } from '@/config'
-import { Button } from '@/components/ui/button'
+import React, { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { FormControlProps } from '@/config';
+import { Button } from '@/components/ui/button';
+import { Icons } from '@/utility/icons.config';
 
 export type FormDataType = {
   userName?: string;
@@ -13,7 +13,6 @@ export type FormDataType = {
   password: string;
   [key: string]: string | undefined;
 };
-
 
 type CommonFormProps<T extends FormDataType> = {
   formControls: FormControlProps[];
@@ -24,6 +23,8 @@ type CommonFormProps<T extends FormDataType> = {
 };
 
 const CommonForm = <T extends FormDataType>({ formControls, formData, setFormData, onSubmit, buttonText = 'Submit' }: CommonFormProps<T>) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleChange = (name: keyof T) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = event.target.value;
     setFormData(prevData => ({
@@ -36,14 +37,24 @@ const CommonForm = <T extends FormDataType>({ formControls, formData, setFormDat
     switch (field.componentType) {
       case 'input':
         return (
-          <Input
-            name={field.name}
-            placeholder={field.placeholder}
-            id={field.name}
-            type={field.type || 'text'}
-            value={formData[field.name as keyof T] || ''}
-            onChange={handleChange(field.name as keyof T)}
-          />
+          <div className='relative'>
+            <Input
+              name={field.name}
+              placeholder={field.placeholder}
+              id={field.name}
+              type={field.type === 'password' && showPassword ? 'text' : field.type || 'text'}
+              value={formData[field.name as keyof T] || ''}
+              onChange={handleChange(field.name as keyof T)}
+            />
+            {field.type === 'password' && (
+              <span
+                className='absolute top-2.5 right-4 cursor-pointer'
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <Icons.visible /> : <Icons.inVisible />}
+              </span>
+            )}
+          </div>
         );
 
       case 'textarea':
