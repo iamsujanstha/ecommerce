@@ -4,6 +4,7 @@ import { RequestMethod } from "@/lib/api-request/api-types";
 import { privateRoutePath } from "@/routes/private/private-route-path";
 import { setToStorage } from "@/utility/storage";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 export const apiDetails = {
   register: {
@@ -55,12 +56,18 @@ export const useLogin = () => {
       if (data?.data) {
         const response = data?.data?.data as unknown as LoginResponse;
         // create(response.token)
-        setToStorage('token', response.token, 'local')
-        window.location.href = privateRoutePath.adminDashboard;
+        setToStorage('token', response.token, 'local');
+        setToStorage('role', response.role, 'local'); // Store role in local storage
+        // Redirect based on role
+        const redirectPath = response.role === 'admin'
+          ? privateRoutePath.adminDashboard
+          : privateRoutePath.home;
+
+        window.location.href = redirectPath;
       }
     },
-    meta: {
-      disableSuccessToast: true,
+    onError(data: any) {
+      toast.error(data.response.data.message)
     },
   });
 };
