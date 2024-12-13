@@ -71,14 +71,13 @@ const loginUser: RequestHandler = async (req: Request, res: Response): Promise<v
       expiresIn: '1h',
     })
 
-    res.cookie('token', token, { httpOnly: true, secure: false, path: '/', sameSite: 'lax' }).json({
+    res.cookie('token', token, { httpOnly: true, secure: true, path: '/', sameSite: 'lax' }).json({
       success: true,
       message: 'Login successful',
       data: {
         id: user.id,
         email: user.email,
         role: user.role,
-        token,
       }
     });
 
@@ -104,9 +103,9 @@ const logoutUser = (req: Request, res: Response) => {
 
 // Auth Middleware to Protect Routes
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  // const token = req.headers.authorization?.split(' ')[1]; only when client send the token through authorization header
+  // const token = req.headers.authorization?.split(' ')[1]; //only when client send the token through authorization header
   const token = req.cookies.token;
-
+  console.log(req.cookies)
   if (!token) {
     res.status(401).json({
       success: false,

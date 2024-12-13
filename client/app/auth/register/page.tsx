@@ -1,9 +1,11 @@
 'use client'
 import { useRegister } from '@/app/auth/auth.query'
-import CommonForm from '@/components/core/common-form/CommonForm'
-import { registerFormControls } from '@/config'
+import { registerFormControls, RegisterType } from '@/config'
+import { createDynamicCommonForm } from '@/utility/hoc/create-dynamic-form'
 import Link from 'next/link'
 import React, { useState } from 'react'
+
+const RegisterForm = createDynamicCommonForm<RegisterType>();
 
 const initialState = {
   userName: '',
@@ -35,7 +37,7 @@ const Register = () => {
           </Link>
         </p>
       </div>
-      <CommonForm
+      <RegisterForm
         formControls={registerFormControls}
         buttonText={isPending ? 'loading...' : 'Sign Up'}
         formData={formData}

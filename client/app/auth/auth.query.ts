@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import apiRequest from "@/lib/api-request/api-request";
 import { RequestMethod } from "@/lib/api-request/api-types";
-import { privateRoutePath } from "@/routes/private/private-route-path";
-import { setToStorage } from "@/utility/storage";
-import { useMutation } from "@tanstack/react-query";
+import { privateRoutePath } from "@/routes/private/private.routes";
+import { setToStorage, storeToken } from "@/utility/storage";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
 import { toast } from "react-toastify";
 
 export const apiDetails = {
@@ -16,10 +17,15 @@ export const apiDetails = {
     controllerName: "auth/login",
     actionName: "login",
     requestMethod: RequestMethod.POST,
+  },
+  checkAuth: {
+    controllerName: "auth/check-auth",
+    actionName: "check_auth",
+    requestMethod: RequestMethod.GET
   }
 }
-type LoginResponse = Record<'token' | 'email' | 'id' | 'role', string>;
 
+type LoginResponse = Record<'token' | 'email' | 'id' | 'role', string>;
 
 export const useRegister = () => {
   return useMutation({
@@ -34,7 +40,7 @@ export const useRegister = () => {
       if (data?.data) {
         const response = data?.data as unknown as any;
         console.log(response)
-        window.location.href = privateRoutePath.adminDashboard;
+        window.location.href = privateRoutePath.adminRoute.adminDashboard;
       }
     },
     meta: {
@@ -58,10 +64,11 @@ export const useLogin = () => {
         // create(response.token)
         setToStorage('token', response.token, 'local');
         setToStorage('role', response.role, 'local'); // Store role in local storage
+        storeToken(response.token);
         // Redirect based on role
         const redirectPath = response.role === 'admin'
-          ? privateRoutePath.adminDashboard
-          : privateRoutePath.home;
+          ? privateRoutePath.adminRoute.adminDashboard
+          : privateRoutePath.userRoute.home;
 
         window.location.href = redirectPath;
       }
@@ -71,3 +78,18 @@ export const useLogin = () => {
     },
   });
 };
+
+
+export const useCheckAuth = () => {
+  return useQuery({
+    queryKey: [apiDetails.checkAuth.actionName],
+    queryFn() {
+      return apiRequest<BackendSuccessResponse<LoginResponse>>({
+        apiDetails: apiDetails.checkAuth,
+      });
+    },
+    select(data) {
+      return data?.data;
+    },
+  });
+}

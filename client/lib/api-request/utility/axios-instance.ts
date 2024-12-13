@@ -1,5 +1,5 @@
 // Import the correct type
-import { privateRoutePath } from "@/routes/private/private-route-path";
+import { privateRoutePath } from "@/routes/private/private.routes";
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 // Create Axios instance with base configuration
@@ -11,10 +11,11 @@ const axiosInstance = axios.create({
 // Request interceptor to add auth token and handle request logging
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem("authToken");
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // const token = getFromStorage("token", 'local');
+
+    // if (token && config.headers) {
+    //   config.headers.Authorization = `Bearer ${token}`;
+    // }
     return config;
   },
   (error) => {
@@ -22,16 +23,19 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling and custom response logging
+// Axios response interceptor
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
+
     console.error("API Response Error:", error);
+
     if (error.response?.status === 401) {
-      // Handle unauthorized access, like logging out the user
-      localStorage.removeItem("token");
-      window.location.href = privateRoutePath.base;
+      if (window.location.pathname !== privateRoutePath.login) {
+        window.location.href = privateRoutePath.login;
+      }
     }
+
     return Promise.reject(error);
   }
 );

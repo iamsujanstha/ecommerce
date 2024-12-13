@@ -2,7 +2,7 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
-
+import { GiProgression } from "react-icons/gi";
 
 interface IconProps {
   size?: string;
@@ -23,5 +23,6 @@ const createIcon = (IconComponent: IconType): React.FC<IconProps> => {
 
 export const Icons = {
   visible: createIcon(IoEye),
-  inVisible: createIcon(IoEyeOff)
+  inVisible: createIcon(IoEyeOff),
+  adminPanel: createIcon(GiProgression)
 };

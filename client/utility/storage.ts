@@ -28,5 +28,8 @@ const clearStorage = (type: StorageType = 'local') => {
   storage?.clear();
 };
 
+export function storeToken(token: string) {
+  document.cookie = `token=${token}; path=/; secure; httpOnly; max-age=86400`; // 1-day expiration
+}
 
 export { setToStorage, getFromStorage, removeFromStorage, clearStorage };
