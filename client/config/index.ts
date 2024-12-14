@@ -27,13 +27,13 @@ export type FormControlProps<T> = {
 
 // Define type for initial form data
 export type AddProductType = {
-  image: null | File,
+  image?: string,
   title: string;
-  description: string;
+  description?: string;
   category: string;
   brand: string;
   price: string;
-  salePrice: string;
+  salePrice?: string;
   totalStock: string;
 };
 
@@ -121,7 +121,7 @@ export const adminSidebarMenuItems: AdminSidebarMenuItems[] = [
   }
 ]
 
-export const addProductFormElements: FormControlProps<Omit<AddProductType, 'image'>>[] = [
+export const addProductFormElements: FormControlProps<AddProductType>[] = [
   {
     label: "Title",
     name: "title",

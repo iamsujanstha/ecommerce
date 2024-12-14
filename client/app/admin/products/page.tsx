@@ -1,17 +1,18 @@
 'use client'
-
-import CommonForm from '@/components/core/common-form/CommonForm'
 import { Button } from '@/components/ui/button'
 import React, { useEffect, useState } from 'react'
 import { addProductFormElements, AddProductType } from '@/config'
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet'
 import ImageUpload from '@/components/core/image-upload/ImageUpload'
-import { useImageUpload } from '@/app/admin/products/products.query'
+import { useAddProduct, useImageUpload } from '@/app/admin/products/products.query'
 import { z } from 'zod';
+import { createDynamicCommonForm } from '@/utility/hoc/create-dynamic-form'
 
+
+const AddProductForm = createDynamicCommonForm<AddProductType>();
 
 const initialFormData = {
-  image: null,
+  image: '',
   title: '',
   description: '',
   category: '',
@@ -19,11 +20,10 @@ const initialFormData = {
   price: '',
   salePrice: '',
   totalStock: ''
-} as const;
-
+};
 
 export const productFormSchema = z.object({
-  image: z.string().min(1, { message: 'Image is required' }), // If you want image to be required
+  image: z.string().optional(),
   title: z.string().min(1, { message: 'Title is required' }),
   description: z.string().optional(),
   category: z.string().min(1, { message: 'Category is required' }),
@@ -36,13 +36,14 @@ export const productFormSchema = z.object({
 const Products = () => {
   const [formData, setFormData] = useState<Omit<AddProductType, 'image'>>(initialFormData);
   const [uploadImage, setUploadImage] = useState<File | null>(null);
-  const [uploadFileUrl, setUploadFileUrl] = useState<string>();
+  const [, setUploadFileUrl] = useState<string>();
 
   const { data: imageData, mutate: mutateUploadImage } = useImageUpload();
+  const { mutate: addProduct } = useAddProduct();
   // const [openDialog, setOpenDialog] = useState(false);
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // mutate({ ...formData });
+  const onSubmit = (data: AddProductType) => {
+    console.log({ data })
+    addProduct({ ...data });
   };
 
   useEffect(() => {
@@ -54,10 +55,7 @@ const Products = () => {
         }
       })
     }
-
   }, [imageData?.data.name, mutateUploadImage, setUploadFileUrl, uploadImage]);
-
-  console.log({ uploadFileUrl })
 
   return (
     <div className='mb-5 w-full flex justify-end'>
@@ -73,14 +71,15 @@ const Products = () => {
             uploadFile={uploadImage}
             setUploadFile={setUploadImage}
           />
-          <div className='py-6'>
-            <CommonForm
+          <div className='py-6 overflow-y-auto h-full'>
+            <AddProductForm
               formData={formData}
               setFormData={setFormData}
               buttonText='Add'
               formControls={addProductFormElements}
               onSubmit={onSubmit}
               validationSchema={productFormSchema}
+              ariaName='Add Product Form'
             />
           </div>
         </SheetContent>

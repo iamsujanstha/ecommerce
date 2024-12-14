@@ -9,7 +9,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ error, id }) => {
   if (!error) return null;
 
   return (
-    <span id={id} className="text-red-500 text-xs">
+    <span id={id} className="text-red-500 text-xs font-semibold">
       {error}
     </span>
   );

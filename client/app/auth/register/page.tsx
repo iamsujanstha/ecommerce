@@ -17,8 +17,7 @@ const Register = () => {
   const [formData, setFormData] = useState(initialState);
   const { mutate, isPending } = useRegister();
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = () => {
     console.log(formData)
     mutate({ ...formData })
   }

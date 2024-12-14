@@ -11,6 +11,7 @@ import { Icons } from '@/utility/icons.config';
 import { FormControlProps } from '@/config';
 import ErrorMessage from '@/components/core/common-form/ErrorMessage';
 import { ZodSchema } from 'zod';
+import { cn } from '@/lib/utils';
 
 
 export type CommonFormProps<T extends Record<string, any>> = {
@@ -20,15 +21,17 @@ export type CommonFormProps<T extends Record<string, any>> = {
   onSubmit: (data: T) => void;
   buttonText?: string;
   validationSchema?: ZodSchema<T>;
+  ariaName?: string;
 };
 
 const CommonForm = <T extends Record<string, string>>({
   formControls,
   formData,
-  // setFormData,
+  setFormData,
   onSubmit,
   buttonText = 'Submit',
   validationSchema,
+  ariaName
 }: CommonFormProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,13 +45,14 @@ const CommonForm = <T extends Record<string, string>>({
   });
 
   const onSubmitHandler: SubmitHandler<T> = (data) => {
+    setFormData(data)
     onSubmit(data);
   };
 
   const renderInputs = (field: FormControlProps<T>) => {
     const fieldError = errors[field.name as Path<T>];
     const errorId = fieldError ? `${field.name}-error` : undefined;
-
+    console.log({ field })
     switch (field.componentType) {
       case 'input':
         return (
@@ -63,6 +67,7 @@ const CommonForm = <T extends Record<string, string>>({
                   type={field.type === 'password' && showPassword ? 'text' : field.type || 'text'}
                   aria-invalid={!!fieldError}
                   aria-describedby={errorId}
+                  className={cn(fieldError && 'border border-red-600')}
                 />
                 {field.type === 'password' && (
                   <span
@@ -91,6 +96,7 @@ const CommonForm = <T extends Record<string, string>>({
                   placeholder={field.placeholder}
                   aria-invalid={!!fieldError}
                   aria-describedby={errorId}
+                  className={cn(fieldError && 'border border-red-600')}
                 />
                 <ErrorMessage error={fieldError?.message?.toString()} id={errorId} />
               </div>
@@ -104,20 +110,23 @@ const CommonForm = <T extends Record<string, string>>({
             name={field.name}
             control={control}
             render={({ field: controllerField }) => (
-              <Select {...controllerField}>
+              <Select {...controllerField} >
                 <SelectTrigger
-                  className="w-full"
+                  className={cn(fieldError && 'border border-red-600', 'w-full')}
                   aria-invalid={!!fieldError}
                   aria-describedby={errorId}
                 >
                   <SelectValue placeholder={field.placeholder} />
                 </SelectTrigger>
                 <SelectContent>
-                  {field.options?.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
+                  {field.options?.map((option) => {
+                    console.log(option.label)
+                    return (
+                      <SelectItem key={option.id} value={option.id}>
+                        {option.label}
+                      </SelectItem>
+                    )
+                  })}
                 </SelectContent>
                 <ErrorMessage error={fieldError?.message?.toString()} id={errorId} />
               </Select>
@@ -133,7 +142,7 @@ const CommonForm = <T extends Record<string, string>>({
   return (
     <form
       onSubmit={handleSubmit(onSubmitHandler)}
-      aria-label="Dynamic Form"
+      aria-label={ariaName}
     >
       <div className="flex flex-col gap-3">
         {formControls.map((field) => (

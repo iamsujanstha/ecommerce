@@ -22,8 +22,8 @@ const Login = () => {
   const [formData, setFormData] = useState(initialState);
   const { mutate, isPending } = useLogin();
 
-  const onSubmit = () => {
-    mutate({ ...formData });
+  const onSubmit = (data: LoginType) => {
+    mutate({ ...data });
   };
 
   return (
@@ -48,6 +48,7 @@ const Login = () => {
         setFormData={setFormData}
         onSubmit={onSubmit}
         validationSchema={loginSchema}
+        ariaName='Login Form'
       />
     </div>
   )
