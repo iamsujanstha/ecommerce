@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getFromStorage } from "@/utility/storage";
+// import { getFromStorage } from "@/utility/storage";
 
 const UserContext = createContext(null);
 
@@ -9,9 +9,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const userRole = getFromStorage("user", "local");
+    // const userRole = getFromStorage("user", "local");
     if (user) {
-      setUser(userRole)
+      setUser(null)
     }
   }, [user]);
 

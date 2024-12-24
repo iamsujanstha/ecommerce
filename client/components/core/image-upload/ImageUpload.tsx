@@ -1,12 +1,13 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import { FileIcon, UploadCloudIcon, XIcon } from 'lucide-react';
 import React, { useRef } from 'react';
 
 interface ImageUploadProps {
   uploadFile: File | null;
   setUploadFile: React.Dispatch<React.SetStateAction<File | null>>;
+  uploadFileUrl?: string;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ uploadFile, setUploadFile }) => {

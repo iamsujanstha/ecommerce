@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import User from '../../models/User';
 import { DecodedToken } from '../../types';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'c';
 
 // Register User
 const registerUser: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

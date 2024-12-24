@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
-import { useForm, Controller, DefaultValues, Path, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller, DefaultValues, Path, SubmitHandler, PathValue } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import { Textarea } from '@/components/ui/TextArea';
+import { Button } from '@/components/ui/Button';
 import { Icons } from '@/utility/icons.config';
 import { FormControlProps } from '@/config';
 import ErrorMessage from '@/components/core/common-form/ErrorMessage';
@@ -39,6 +39,7 @@ const CommonForm = <T extends Record<string, string>>({
     control,
     handleSubmit,
     formState: { errors },
+    setValue
   } = useForm<T>({
     resolver: validationSchema ? zodResolver(validationSchema) : undefined,
     defaultValues: formData as DefaultValues<T> || {},
@@ -49,10 +50,18 @@ const CommonForm = <T extends Record<string, string>>({
     onSubmit(data);
   };
 
+  // const handleChange = (name: keyof T) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   const value = event.target.value;
+  //   setFormData(prevData => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // }
+
   const renderInputs = (field: FormControlProps<T>) => {
     const fieldError = errors[field.name as Path<T>];
     const errorId = fieldError ? `${field.name}-error` : undefined;
-    console.log({ field })
+
     switch (field.componentType) {
       case 'input':
         return (
@@ -110,7 +119,11 @@ const CommonForm = <T extends Record<string, string>>({
             name={field.name}
             control={control}
             render={({ field: controllerField }) => (
-              <Select {...controllerField} >
+              <Select {...controllerField}
+                onValueChange={(value) => {
+                  setValue(field.name as Path<T>, value as PathValue<T, Path<T>>);
+                }}
+              >
                 <SelectTrigger
                   className={cn(fieldError && 'border border-red-600', 'w-full')}
                   aria-invalid={!!fieldError}
@@ -120,7 +133,6 @@ const CommonForm = <T extends Record<string, string>>({
                 </SelectTrigger>
                 <SelectContent>
                   {field.options?.map((option) => {
-                    console.log(option.label)
                     return (
                       <SelectItem key={option.id} value={option.id}>
                         {option.label}

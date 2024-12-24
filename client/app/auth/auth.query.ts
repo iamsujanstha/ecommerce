@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+'use client'
 import apiRequest from "@/lib/api-request/api-request";
 import { RequestMethod } from "@/lib/api-request/api-types";
 import { privateRoutePath } from "@/routes/private/private.routes";
@@ -22,6 +23,11 @@ export const apiDetails = {
     controllerName: "auth/check-auth",
     actionName: "check_auth",
     requestMethod: RequestMethod.GET
+  },
+  logout: {
+    controllerName: "auth/logout",
+    actionName: "logout",
+    requestMethod: RequestMethod.POST
   }
 }
 
@@ -92,4 +98,18 @@ export const useCheckAuth = () => {
       return data?.data;
     },
   });
+}
+
+export const useLogout = () => {
+  return useMutation({
+    mutationKey: [apiDetails.logout.actionName],
+    mutationFn() {
+      return apiRequest<BackendSuccessResponse<Record<'message', string>>>({
+        apiDetails: apiDetails.logout
+      })
+    },
+    meta: {
+      disableSuccessToast: true,
+    },
+  })
 }

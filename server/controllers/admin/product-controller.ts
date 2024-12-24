@@ -77,7 +77,7 @@ const fetchAllProducts = async (req: Request, res: Response) => {
 const updateProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { image, title, description, category, brand, salesPrice, price, totalStock } = req.body;
+    const { image, title, description, category, brand, salePrice, price, totalStock } = req.body;
 
     const findProduct = await Product.findById(id);
 
@@ -96,7 +96,7 @@ const updateProduct = async (req: Request, res: Response) => {
       description: description || findProduct.description,
       category: category || findProduct.category,
       brand: brand || findProduct.brand,
-      salePrice: salesPrice ?? findProduct.salePrice,
+      salePrice: salePrice ?? findProduct.salePrice,
       price: price ?? findProduct.price,
       totalStock: totalStock ?? findProduct.totalStock,
     });
@@ -116,10 +116,9 @@ const updateProduct = async (req: Request, res: Response) => {
 }
 
 //delete a product
-const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-
     const product = await Product.findByIdAndDelete(id);
 
     if (!product) {

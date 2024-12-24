@@ -13,7 +13,7 @@ const initialState = {
   password: ''
 }
 
-export const loginSchema = z.object({
+const loginSchema = z.object({
   email: z.string().min(1, { message: 'Email Address is required' }),
   password: z.string().min(1, { message: 'Password is required' })
 });

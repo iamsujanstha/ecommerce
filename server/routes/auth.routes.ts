@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { authMiddleware, loginUser, registerUser } from '../controllers/auth/auth-controller'
+import { authMiddleware, loginUser, logoutUser, registerUser } from '../controllers/auth/auth-controller'
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ router.get('/check-auth', authMiddleware, (req: Request, res: Response) => {
     data: user
   })
 })
+router.post('/logout', logoutUser);
 
 export default router;

@@ -32,9 +32,9 @@ export type AddProductType = {
   description?: string;
   category: string;
   brand: string;
-  price: string;
-  salePrice?: string;
-  totalStock: string;
+  price: number;
+  salePrice?: number;
+  totalStock: number;
 };
 
 export type RegisterType = {

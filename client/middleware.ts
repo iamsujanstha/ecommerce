@@ -1,16 +1,23 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import jwt from 'jsonwebtoken'
 
 export async function middleware(request: NextRequest) {
+  const token = request.cookies.get('token')?.value;
 
-  // const token = request.cookies.get('token');
-
+  console.log(token)
   // If there is no token, redirect to the login page
-  // if (!token) {
-  //   return NextResponse.redirect(new URL('/auth/login', request.url));
-  // }
+  if (!token) {
+    return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
 
-  // If token exists, allow the request to continue
+  try {
+    const decoded = jwt.verify(token, 'wrong-secret');
+    console.log(decoded)
+  } catch (err) {
+    console.log(err)
+  }
+
   return NextResponse.next();
 }
 

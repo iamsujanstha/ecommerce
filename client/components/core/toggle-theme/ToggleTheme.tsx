@@ -1,6 +1,6 @@
 'use client'
 import useTheme from '@/hooks/useTheme';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
