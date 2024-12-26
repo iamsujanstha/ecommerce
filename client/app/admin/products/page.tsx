@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/
 import ImageUpload from '@/components/core/image-upload/ImageUpload'
 import { useAddProduct, useDeleteProduct, useGetProductList, useImageUpload, useUpdateProduct } from '@/app/admin/products/products.query'
 import { z } from 'zod';
-import { createDynamicCommonForm } from '@/utility/hoc/create-dynamic-form'
+import { createDynamicCommonForm } from '@/utils/hoc/create-dynamic-form'
 import { Card, CardContent, CardFooter } from '@/components/ui/Card'
 import Image from 'next/image'
 import noImage from '@/assets/images/noImage.jpg'

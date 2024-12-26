@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/Label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/TextArea';
 import { Button } from '@/components/ui/Button';
-import { Icons } from '@/utility/icons.config';
+import { Icons } from '@/utils/icons.config';
 import { FormControlProps } from '@/config';
 import ErrorMessage from '@/components/core/common-form/ErrorMessage';
 import { ZodSchema } from 'zod';

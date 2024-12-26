@@ -3,7 +3,7 @@
 import apiRequest from "@/lib/api-request/api-request";
 import { RequestMethod } from "@/lib/api-request/api-types";
 import { privateRoutePath } from "@/routes/private/private.routes";
-import { setToStorage, storeToken } from "@/utility/storage";
+import { setToStorage, storeToken } from "@/utils/storage";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { toast } from "react-toastify";

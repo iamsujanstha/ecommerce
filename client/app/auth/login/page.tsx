@@ -1,7 +1,7 @@
 'use client'
 import { useLogin } from '@/app/auth/auth.query'
 import { loginFromControls, LoginType } from '@/config'
-import { createDynamicCommonForm } from '@/utility/hoc/create-dynamic-form'
+import { createDynamicCommonForm } from '@/utils/hoc/create-dynamic-form'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { z } from 'zod'

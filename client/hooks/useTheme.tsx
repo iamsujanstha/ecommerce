@@ -1,5 +1,5 @@
 'use client'
-import { getFromStorage, setToStorage } from '@/utility/storage';
+import { getFromStorage, setToStorage } from '@/utils/storage';
 import { useEffect, useState } from 'react';
 
 export default function useTheme() {

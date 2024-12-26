@@ -245,7 +245,9 @@ export const brandOptionsMap = {
   "h&m": "H&M",
 };
 
-export const filterOptions = {
+export type FilterOptionsType = { [key: string]: Record<'id' | 'label', string>[] }
+
+export const filterOptions: FilterOptionsType = {
   category: [
     { id: "men", label: "Men" },
     { id: "women", label: "Women" },

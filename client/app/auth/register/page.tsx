@@ -1,7 +1,7 @@
 'use client'
 import { useRegister } from '@/app/auth/auth.query'
 import { registerFormControls, RegisterType } from '@/config'
-import { createDynamicCommonForm } from '@/utility/hoc/create-dynamic-form'
+import { createDynamicCommonForm } from '@/utils/hoc/create-dynamic-form'
 import Link from 'next/link'
 import React, { useState } from 'react'
 

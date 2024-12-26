@@ -1,8 +1,8 @@
 'use client'
 import Icon from '@/components/core/icon/Icon';
 import { AdminSidebarMenuItems } from '@/config';
-import { getIconFromPath } from '@/utility/get-icons';
-import { Icons } from '@/utility/icons.config';
+import { getIconFromPath } from '@/utils/get-icons';
+import { Icons } from '@/utils/icons.config';
 import clsx from 'clsx';
 import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react';

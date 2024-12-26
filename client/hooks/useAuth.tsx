@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { getFromStorage } from "@/utility/storage";
-import { verifyToken } from "@/utility/auth";
+import { getFromStorage } from "@/utils/storage";
+import { verifyToken } from "@/utils/auth";
 
 export function useAuth(requiredRole: "user" | "admin") {
   const router = useRouter();
