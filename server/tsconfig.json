@@ -12,6 +12,17 @@
       "./node_modules/@types",
       "./types"
     ],
+    "paths": {
+      "@config/*": [
+        "./config/*"
+      ],
+      "@controllers/*": [
+        "/controllers/*"
+      ],
+      "@utils/*": [
+        "./utils"
+      ]
+    }
   },
   "include": [
     "server.ts",

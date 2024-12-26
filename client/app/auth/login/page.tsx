@@ -1,29 +1,29 @@
 'use client'
 import { useLogin } from '@/app/auth/auth.query'
-import { loginFromControls } from '@/config'
-import dynamic from 'next/dynamic'
+import { loginFromControls, LoginType } from '@/config'
+import { createDynamicCommonForm } from '@/utils/hoc/create-dynamic-form'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { z } from 'zod'
 
-const CommonForm = dynamic(() => import('@/components/core/common-form/CommonForm'), { ssr: false })
+const LoginForm = createDynamicCommonForm<LoginType>();
 
-type LoginFormData = {
-  email: string;
-  password: string;
-}
-
-const initialState: LoginFormData = {
+const initialState = {
   email: '',
   password: ''
 }
 
+const loginSchema = z.object({
+  email: z.string().min(1, { message: 'Email Address is required' }),
+  password: z.string().min(1, { message: 'Password is required' })
+});
+
 const Login = () => {
-  const [formData, setFormData] = useState<LoginFormData>(initialState);
+  const [formData, setFormData] = useState(initialState);
   const { mutate, isPending } = useLogin();
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutate({ ...formData });
+  const onSubmit = (data: LoginType) => {
+    mutate({ ...data });
   };
 
   return (
@@ -41,12 +41,14 @@ const Login = () => {
         </p>
 
       </div>
-      <CommonForm
+      <LoginForm
         formControls={loginFromControls}
         buttonText={isPending ? 'Logging in...' : 'Login'}
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
+        validationSchema={loginSchema}
+        ariaName='Login Form'
       />
     </div>
   )
