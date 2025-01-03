@@ -9,10 +9,10 @@ const ShopLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div className="h-screen w-full flex flex-col">
         <ShopHeader />
         <section className="flex flex-1 gap-4 overflow-hidden">
-          <aside className="w-80 bg-gray-300 h-full overflow-y-auto">
+          <aside className="lg:block w-80 hidden bg-gray-300 h-full overflow-y-auto">
             <ShopSidebar />
           </aside>
-          <main className="flex-1 overflow-y-auto-auto">
+          <main className="flex-1 overflow-y-auto">
             {/* Pass sidebarValue to children */}
             {/* {React.isValidElement(children) &&
             React.cloneElement(children, { sidebarValue })} */}

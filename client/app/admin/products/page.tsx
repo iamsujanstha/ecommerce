@@ -1,15 +1,14 @@
 'use client'
 import { Button } from '@/components/ui/Button'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { addProductFormElements, AddProductType } from '@/config'
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/Sheet'
 import ImageUpload from '@/components/core/image-upload/ImageUpload'
 import { useAddProduct, useDeleteProduct, useGetProductList, useImageUpload, useUpdateProduct } from '@/app/admin/products/products.query'
 import { z } from 'zod';
 import { createDynamicCommonForm } from '@/utils/hoc/create-dynamic-form'
-import { Card, CardContent, CardFooter } from '@/components/ui/Card'
-import Image from 'next/image'
-import noImage from '@/assets/images/noImage.jpg'
+import { DataTable } from '@/components/ui/DataTable'
+import { getColumns } from '@/app/admin/products/columns'
 
 
 const AddProductForm = createDynamicCommonForm<AddProductType>();
@@ -20,9 +19,9 @@ const initialFormData = {
   description: '',
   category: '',
   brand: '',
-  price: 0,
-  salePrice: 0,
-  totalStock: 0
+  price: null,
+  salePrice: null,
+  totalStock: null
 };
 
 const productFormSchema = z.object({
@@ -46,9 +45,10 @@ const Products = () => {
   const [formData, setFormData] = useState<AddProductType>(initialFormData);
   const [uploadImage, setUploadImage] = useState<File | null>(null);
   const [uploadFileUrl, setUploadFileUrl] = useState<string>();
-  const [isSheetOpen, setIsSheetOpen] = useState(false); // Controls Sheet visibility
+  const [isSheetOpen, setSheetOpen] = useState(false); // Controls Sheet visibility
   const [editMode, setEditMode] = useState(false); // Tracks if we are editing
-  const [currentProductId, setCurrentProductId] = useState<string | null>(null); // ID of the product being edited
+  const [currentProductId, setCurrentProductId] = useState<string | null>(null);
+  const [, toggleDeleteModal] = useReducer((state) => !state, false);
 
   const { mutate: mutateUploadImage } = useImageUpload();
   const { mutate: addProduct } = useAddProduct();
@@ -64,7 +64,7 @@ const Products = () => {
       // Add new product
       addProduct({ ...data, image: uploadFileUrl });
     }
-    setIsSheetOpen(false); // Close the Sheet after submission
+    setSheetOpen(false); // Close the Sheet after submission
     resetForm(); // Reset form data
   };
 
@@ -79,28 +79,25 @@ const Products = () => {
   }, [mutateUploadImage, setUploadFileUrl, uploadImage]);
 
   const handleDelete = (id: string) => {
-    return () => {
-      deleteProduct({ id });
-    }
-  };
+    toggleDeleteModal();
+    deleteProduct({ id });
+  }
 
   const handleEdit = (product: AddProductType & { _id: string }) => {
-    return () => {
-      setFormData({
-        image: product.image || '',
-        title: product.title,
-        description: product.description,
-        category: product.category,
-        brand: product.brand,
-        price: product.price,
-        salePrice: product.salePrice,
-        totalStock: product.totalStock
-      });
-      setUploadFileUrl(product.image);
-      setCurrentProductId(product._id);
-      setEditMode(true);
-      setIsSheetOpen(true);
-    };
+    setFormData({
+      image: product.image || '',
+      title: product.title,
+      description: product.description,
+      category: product.category,
+      brand: product.brand,
+      price: product.price,
+      salePrice: product.salePrice,
+      totalStock: product.totalStock
+    });
+    setUploadFileUrl(product.image);
+    setCurrentProductId(product._id);
+    setEditMode(true);
+    setSheetOpen(true);
   };
 
   const resetForm = () => {
@@ -111,14 +108,12 @@ const Products = () => {
     setCurrentProductId(null);
   };
 
-  console.log(formData)
-
   return (
     <div className='w-full flex-col'>
       <div className='mb-5 w-full flex justify-end'>
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
-            <Button onClick={() => { resetForm(); setIsSheetOpen(true); }}>Add New Product</Button>
+            <Button onClick={() => { resetForm(); setSheetOpen(true); }}>Add New Product</Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>{editMode ? 'Edit Product' : 'Add New Product'}</SheetHeader>
@@ -141,36 +136,11 @@ const Products = () => {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-        {productList?.data?.data?.map((item) => (
-          <Card className="w-full flex flex-col justify-between" key={item._id}>
-            <CardContent className="flex flex-col justify-between h-full gap-2 px-0">
-              <div className="w-full h-72 relative overflow-hidden rounded-lg">
-                <Image
-                  src={item.image || noImage}
-                  alt="image"
-                  layout="fill"
-                  objectFit="cover" // Ensures the image covers the container
-                  priority={false} // Lazy load for performance
-                  className="rounded-lg hover:scale-50"
-                  objectPosition='center'
-                />
-              </div>
+      <DataTable columns={getColumns(handleEdit, handleDelete)} data={productList?.data?.data || []} />
+      {/* {isOpenDeleteModal &&
+        <ConfimationModal
 
-              <h2 className="font-bold text-lg text-center">{item.title}</h2>
-              <div className="flex justify-between px-6 font-semibold">
-                <span className="line-through">${item.price}</span>
-                <span>${item.salePrice}</span>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between px-4">
-              <Button onClick={handleEdit(item)}>Edit</Button>
-              <Button onClick={handleDelete(item._id)}>Delete</Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
+      } */}
     </div>
   )
 }
