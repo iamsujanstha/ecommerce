@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import Products from '../../models/Product'; // Assuming this is your Mongoose model
+import Products from '../../models/Product';
+import { ProductSort } from '../../enum/sortEnum'
 
 const getFilteredProducts = async (req: Request, res: Response) => {
   try {
@@ -26,13 +27,13 @@ const getFilteredProducts = async (req: Request, res: Response) => {
     // Determine sort order
     let sortCriteria: any = {};
     switch (sortBy) {
-      case 'price-lowtohigh':
+      case ProductSort.LOW_TO_HIGH:
         sortCriteria.price = 1; // Ascending
         break;
-      case 'price-hightolow':
+      case ProductSort.HIGH_TO_LOW:
         sortCriteria.price = -1; // Descending
         break;
-      case 'newest':
+      case ProductSort.NEWEST:
         sortCriteria.createdAt = -1; // Newest first
         break;
       default:

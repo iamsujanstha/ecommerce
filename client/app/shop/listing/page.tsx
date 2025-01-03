@@ -7,20 +7,24 @@ import Image from 'next/image';
 import noImage from '@/assets/images/noImage.jpg'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { sortOptions } from '@/config';
-import { useFilteredProductList } from '@/app/shop/listing/listingProducts.query';
+import { useAddToCart, useFetchCartItems, useFilteredProductList } from '@/app/shop/listing/listingProducts.query';
 import { useListingProductFilter } from '@/providers/shopFilterContext';
 import { createSearchParamsHelper } from '@/utils/createSearchParams';
 import { useRouter } from 'next/navigation';
+import { getFromStorage } from '@/utils/storage';
 
 
 const ListingPage = () => {
-  const [sort, setSort] = useState('')
-  const { data: productList, mutate: fetchProduct } = useFilteredProductList();
+  const [sortBy, setSortBy] = useState('')
   const { filter } = useListingProductFilter();
+  const { data: productList, mutate: fetchProduct } = useFilteredProductList();
+  const { mutate: addToCart } = useAddToCart();
+  const { data: cartItemList } = useFetchCartItems(getFromStorage('id', 'local') as string);
+
   const router = useRouter();
 
   function handleSort(value: string) {
-    setSort(value);
+    setSortBy(value);
   }
 
   useEffect(() => {
@@ -29,17 +33,27 @@ const ListingPage = () => {
 
     const payload = {
       ...filter,
-      sort,
+      sortBy,
     };
 
     fetchProduct(payload);
-  }, [fetchProduct, filter, router, sort]);
+  }, [fetchProduct, filter, router, sortBy]);
 
-  console.log(productList)
+  const handleAddToCart = (productId: string) => {
+    return () => {
+      const payload = {
+        userId: getFromStorage('id', 'local') as string,
+        productId,
+        quantity: 1
+      }
+
+      addToCart(payload)
+    }
+  }
 
   return (
     <div>
-      <div className='flex justify-between p-6 sticky top-2 border-b-2 border-gray-300'>
+      <div className='flex justify-between sticky top-0 bg-white p-6 border-b-2 border-gray-300'>
         <h2 className='font-semibold text-lg'>All Products</h2>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -53,7 +67,7 @@ const ListingPage = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[200px]">
-            <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
+            <DropdownMenuRadioGroup value={sortBy} onValueChange={handleSort}>
               {sortOptions.map((sortItem) => (
                 <DropdownMenuRadioItem
                   value={sortItem.id}
@@ -89,7 +103,7 @@ const ListingPage = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button className='w-full'>Add to cart</Button>
+                <Button className='w-full' onClick={handleAddToCart(item._id)}>Add to cart</Button>
               </CardFooter>
             </Card>
           ))}

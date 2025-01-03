@@ -4,8 +4,7 @@ import jwt from 'jsonwebtoken'
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
-
-  console.log(token)
+  
   // If there is no token, redirect to the login page
   if (!token) {
     return NextResponse.redirect(new URL('/auth/login', request.url));

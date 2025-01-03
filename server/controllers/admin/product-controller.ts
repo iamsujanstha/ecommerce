@@ -41,10 +41,10 @@ export const imageUpload = async (req: Request, res: Response) => {
 //add a new product
 const addProduct = async (req: Request, res: Response) => {
   try {
-    const { image, title, description, category, brand, salesPrice, price, totalStock } = req.body;
+    const { image, title, description, category, brand, salePrice, price, totalStock } = req.body;
 
     const newlyCreatedProduct = new Product({
-      image, title, description, category, brand, salesPrice, price, totalStock
+      image, title, description, category, brand, salePrice, price, totalStock
     });
 
     await newlyCreatedProduct.save();
@@ -103,7 +103,6 @@ const updateProduct = async (req: Request, res: Response) => {
 
     //save method takes some times for operation so make await after finishing only goes for next line
     const updatedProduct = await findProduct.save();
-
     res.status(200).json({
       message: 'Updated Successfully',
       data: updatedProduct

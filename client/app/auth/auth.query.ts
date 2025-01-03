@@ -68,7 +68,7 @@ export const useLogin = () => {
       if (data?.data) {
         const response = data?.data?.data as unknown as LoginResponse;
         // create(response.token)
-        setToStorage('token', response.token, 'local');
+        setToStorage('id', response.id, 'local');
         setToStorage('role', response.role, 'local'); // Store role in local storage
         storeToken(response.token);
         // Redirect based on role

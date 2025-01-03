@@ -1,3 +1,4 @@
+import { ProductSort } from "@/enum/sortEnum";
 import { Path } from "react-hook-form";
 
 // Define a generic option type for select dropdowns
@@ -32,9 +33,9 @@ export type AddProductType = {
   description?: string;
   category: string;
   brand: string;
-  price: number;
-  salePrice?: number;
-  totalStock: number;
+  price: number | null;
+  salePrice?: number | null;
+  totalStock: number | null;
 };
 
 export type RegisterType = {
@@ -266,8 +267,8 @@ export const filterOptions: FilterOptionsType = {
 };
 
 export const sortOptions = [
-  { id: "price-lowtohigh", label: "Price: Low to High" },
-  { id: "price-hightolow", label: "Price: High to Low" },
+  { id: ProductSort.LOW_TO_HIGH, label: "Price: Low to High" },
+  { id: ProductSort.HIGH_TO_LOW, label: "Price: High to Low" },
   { id: "title-atoz", label: "Title: A to Z" },
   { id: "title-ztoa", label: "Title: Z to A" },
 ];

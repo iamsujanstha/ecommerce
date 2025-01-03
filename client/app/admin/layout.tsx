@@ -11,7 +11,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       </aside>
       <div className='w-full'>
         <AdminHeader />
-        <main className='flex-1 p-4 bg-gray-400 h-screen overflow-y-auto'>
+        <main className='flex-1 p-4 bg-gray-100 h-screen overflow-y-auto'>
           {children}
         </main>
       </div>
