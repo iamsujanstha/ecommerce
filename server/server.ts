@@ -7,8 +7,25 @@ import { authMiddleware } from './controllers/auth/auth-controller';
 import adminProductRouter from './routes/admin/products.routes';
 import showProductRouter from './routes/shop/products.routes';
 import cartRouter from './routes/shop/cart.routes';
+import {MONGO_URL} from './config/config'
+import dotenv from "dotenv";
 
-mongoose.connect('mongodb+srv://tlsujankco:iamsujan08@cluster0.ie99k.mongodb.net/').then(() => console.log("MongoDB connected!!")).catch((error) => console.log(error))
+// mongoose.connect('mongodb+srv://tlsujankco:iamsujan08@cluster0.ie99k.mongodb.net/').then(() => console.log("MongoDB connected!!")).catch((error) => console.log(error))
+
+dotenv.config();
+
+const connectWithRetry = () => {
+  console.log('Attempting to connect to MongoDB...');
+  mongoose
+    .connect(MONGO_URL)
+    .then(() => console.log('Database connected!!'))
+    .catch((err) => {
+      console.error(`MongoDB connection error: ${err.message}`);
+      setTimeout(connectWithRetry, 5000);
+    });
+};
+
+connectWithRetry();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
