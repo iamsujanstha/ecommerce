@@ -1,0 +1,19 @@
+services:
+  nginx:
+    ports:
+      - "80:80"
+  node-app:
+    build: 
+      context: .
+      args:
+        NODE_ENV: production
+
+    environment:
+      -  NODE_ENV=production
+
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=iamsujan08
+      - MONGO_INITDB_ROOT_PASSWORD=iamsujan08
+    
